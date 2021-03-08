@@ -1,0 +1,16 @@
+D:\REPOSITORY\ASCII 3D\ascii 3dTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTest.TestAdapter.dll
+D:\REPOSITORY\ASCII 3D\ascii 3dTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.Interface.dll
+D:\REPOSITORY\ASCII 3D\ascii 3dTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.MSTestAdapter.PlatformServices.dll
+D:\REPOSITORY\ASCII 3D\ascii 3dTests\bin\Debug\ascii 3dTests.dll
+D:\REPOSITORY\ASCII 3D\ascii 3dTests\bin\Debug\ascii 3dTests.pdb
+D:\REPOSITORY\ASCII 3D\ascii 3dTests\bin\Debug\ascii_3d.exe
+D:\REPOSITORY\ASCII 3D\ascii 3dTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.dll
+D:\REPOSITORY\ASCII 3D\ascii 3dTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll
+D:\REPOSITORY\ASCII 3D\ascii 3dTests\bin\Debug\ascii_3d.pdb
+D:\REPOSITORY\ASCII 3D\ascii 3dTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.xml
+D:\REPOSITORY\ASCII 3D\ascii 3dTests\bin\Debug\Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.xml
+D:\REPOSITORY\ASCII 3D\ascii 3dTests\obj\Debug\ascii 3dTests.csprojAssemblyReference.cache
+D:\REPOSITORY\ASCII 3D\ascii 3dTests\obj\Debug\ascii 3dTests.csproj.CoreCompileInputs.cache
+D:\REPOSITORY\ASCII 3D\ascii 3dTests\obj\Debug\ascii 3dTests.csproj.CopyComplete
+D:\REPOSITORY\ASCII 3D\ascii 3dTests\obj\Debug\ascii 3dTests.dll
+D:\REPOSITORY\ASCII 3D\ascii 3dTests\obj\Debug\ascii 3dTests.pdb
