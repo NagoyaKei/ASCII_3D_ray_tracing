@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ascii_3d
 {
@@ -16,6 +12,12 @@ namespace ascii_3d
 
         public static double dot(vec2 a, vec2 b) => a.x * b.x + a.y * b.y;
         public static double dot(vec3 a, vec3 b) => a.x * b.x + a.y * b.y + a.z * b.z;
+
+        public static void rot(double angle, ref vec3 v)
+        {
+            v.x = v.x * Math.Cos(angle) - v.y * Math.Sin(angle);
+            v.y = v.x * Math.Sin(angle) + v.y * Math.Cos(angle);
+        }
 
         /**
          * sphere of size ra centered at point ce.

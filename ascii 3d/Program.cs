@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Threading;
-using System.Timers;
+using System.Threading.Tasks;
 
 namespace ascii_3d
 {
@@ -13,9 +12,9 @@ namespace ascii_3d
         private static int W = Console.BufferWidth;
         private const int H = 29;
         private static int PIXELS;
-        private const string gradient = " .':,\"!/r(l1Z4H9W8$@";
-        private static int gMaxIndex = gradient.Length - 1;
-        private const double ratio = 1.8;
+        private const string ASCII_GRADIENT = " .':,\"!/r(l1Z4H9W8$@";
+        private static readonly int gMaxIndex = ASCII_GRADIENT.Length - 1;
+        private const double RATIO = 1.8;
         private const int FPS = 60;
         private const bool INFO_ENABLE = true;
         private const int MAP_W = 10;
@@ -33,47 +32,59 @@ namespace ascii_3d
         // map
         static List<char> mapChar = new List<char>();
         static List<string> mapLines = new List<string>();
-
+        private static bool isPressed_W = false;
+        private static bool isPressed_A = false;
+        private static bool isPressed_S = false;
+        private static bool isPressed_D = false;
+        private static bool isPressed_Q = false;
+        private static bool isPressed_E = false;
+        private static void keyPressCatcher(ConsoleKey key, out bool flag)
+        {
+            while (true)
+            {
+                if (key == Console.ReadKey(true).Key)
+                {
+                    flag = true;
+                    Thread.Sleep(50);
+                    flag = false;
+                }
+            }
+        }
+        
         public static void Main(string[] args)
         {
-            foreach (String mapLine in File.ReadAllLines("maps/map1.txt")) {
-                mapChar.AddRange(mapLine.ToCharArray());
-                mapLines.Add(mapLine);
-            }
+            Task.Factory.StartNew(()=> keyPressCatcher(ConsoleKey.W, out isPressed_W));
+            Task.Factory.StartNew(()=> keyPressCatcher(ConsoleKey.A, out isPressed_A));
+            Task.Factory.StartNew(()=> keyPressCatcher(ConsoleKey.S, out isPressed_S));
+            Task.Factory.StartNew(()=> keyPressCatcher(ConsoleKey.D, out isPressed_D));
+            Task.Factory.StartNew(()=> keyPressCatcher(ConsoleKey.Q, out isPressed_Q));
+            Task.Factory.StartNew(()=> keyPressCatcher(ConsoleKey.E, out isPressed_E));
+            
+            loadMap("maps/map1.txt");
 
             rnd = new Random();
             double rndD = rnd.NextDouble();
             PIXELS = W * H;
             Console.CursorVisible = false;
+            double cameraX = -5;
+            double cameraY = 0;
+            double cameraRotateZ = 0;
+            vec3 spherePos = new vec3(0, 0, 0);
+            double sphereR = 1.5d;
+            
+            vec3 cameraDirection = vec3.One;
+            
             while (true)
             {
                 DateTime startFrame = DateTime.Now;
                 char[] screen = new char[PIXELS];
                 int curPos = 0;
-                vec3 light = vec.norm(new vec3(-0.6, Math.Sin(deltaT * rndD) * 2, -1.0));
-                double sphereR = 1.5d;
+                vec3 light = vec.norm(new vec3(-0.6, 1/*Math.Sin(deltaT * rndD) * 2*/, -1.0));
+                double FOV = 0.9;
+                
+                cameraHandler(ref cameraX, ref cameraY, ref cameraRotateZ);
 
-                vec3 spherePos = new vec3(0, 0, 0);
-
-                for (int i = 0; i < W; i++)
-                {
-                    for (int j = 0; j < H; j++)
-                    {
-                        curPos = i + j * W;
-
-                        vec2 uv = new vec2(i, j) / new vec2(W, H) - new vec2(0.5, 0.5);
-                        uv.x *= ratio;
-
-                        vec3 cameraOrigin = new vec3(-5, Math.Sin(deltaT) / 2, 0);
-                        vec3 cameraDirection = vec.norm(new vec3(1, uv));
-
-                        vec2 it = vec.sphIntersect(cameraOrigin, cameraDirection, spherePos, sphereR);
-                        vec3 oneIfIntersect = vec.castRay(cameraOrigin, cameraDirection, it, light);
-                        int color = (int)(vec.avg(oneIfIntersect) * gMaxIndex);
-
-                        screen[curPos] = gradient[color > gMaxIndex ? gMaxIndex : color <= 0 ? 0 : color];
-                    }
-                }
+                render(cameraX, cameraY, FOV, cameraRotateZ, spherePos, sphereR, light, screen);
 
                 writeMap(screen);
                 writeInfo(screen);
@@ -93,6 +104,66 @@ namespace ascii_3d
             Console.ReadKey(); 
         }
 
+        private static void render(double cameraX, double cameraY, double FOV, double cameraRotateZ, vec3 spherePos,
+            double sphereR, vec3 light, char[] screen)
+        {
+            int curPos;
+            vec3 cameraDirection;
+            for (int i = 0; i < W; i++)
+            {
+                for (int j = 0; j < H; j++)
+                {
+                    curPos = i + j * W;
+
+                    vec2 uv = new vec2(i, j) / new vec2(W, H) - new vec2(0.5, 0.5);
+                    uv.x *= RATIO;
+
+                    vec3 cameraOrigin = new vec3(cameraX, cameraY, 0);
+                    cameraDirection = vec.norm(new vec3(FOV, uv));
+                    vec.rot(cameraRotateZ, ref cameraDirection);
+                    //cameraDirection.y *= Math.Sin(deltaT * rndD) * 2;
+
+                    renderSphere(spherePos, sphereR, light, screen, cameraOrigin, cameraDirection, curPos);
+                }
+            }
+        }
+
+        private static void renderSphere(vec3 spherePos, double sphereR, vec3 light, char[] screen, vec3 cameraOrigin,
+            vec3 cameraDirection, int curPos)
+        {
+            vec2 it = vec.sphIntersect(cameraOrigin, cameraDirection, spherePos, sphereR);
+            vec3 oneIfIntersect = vec.castRay(cameraOrigin, cameraDirection, it, light);
+            int color = (int)(vec.avg(oneIfIntersect) * gMaxIndex);
+
+            screen[curPos] = ASCII_GRADIENT[color > gMaxIndex ? gMaxIndex : color <= 0 ? 0 : color];
+        }
+
+        private static void loadMap(string mapResource)
+        {
+            foreach (String mapLine in File.ReadAllLines(mapResource))
+            {
+                mapChar.AddRange(mapLine.ToCharArray());
+                mapLines.Add(mapLine);
+            }
+        }
+
+        private static void cameraHandler(ref double cameraX, ref double cameraY, ref double cameraRotateZ)
+        {
+            /*cameraY = Math.Sin(deltaT) / 2;*/
+            if (isPressed_D)
+                cameraY += 0.2;
+            if (isPressed_A)
+                cameraY -= 0.2;
+            if (isPressed_W)
+                cameraX += 0.2;
+            if (isPressed_S)
+                cameraX -= 0.2;
+            if (isPressed_Q)
+                cameraRotateZ += 0.02;
+            if (isPressed_E)
+                cameraRotateZ -= 0.02;
+        }
+
         private static void writeMap(char[] screen)
         {
             writeLinesOnScreen(screen, mapLines, 1, 1);
@@ -101,7 +172,7 @@ namespace ascii_3d
         private static void writeInfo(char[] screen)
         {
             if (!INFO_ENABLE) return;
-            string infoText = $"FPS {FPS} ({(1000 / lastFrameTime.TotalMilliseconds):F0})";
+            string infoText = $"FPS {FPS} ({(1000 / lastFrameTime.TotalMilliseconds):F0}) + PRESSED: W:{isPressed_W}, A:{isPressed_A}, S: {isPressed_S}, D:{isPressed_D}";
             writeLineOnScreen(screen, infoText, 0);
         }
 

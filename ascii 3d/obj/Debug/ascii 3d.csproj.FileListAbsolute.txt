@@ -6,8 +6,8 @@ C:\Users\Tom\RiderProjects\ascii 3d\ascii 3d\obj\Debug\ascii_3d.exe
 C:\Users\Tom\RiderProjects\ascii 3d\ascii 3d\obj\Debug\ascii_3d.pdb
 D:\REPOSITORY\ASCII 3D\ascii 3d\bin\Debug\ascii_3d.exe
 D:\REPOSITORY\ASCII 3D\ascii 3d\bin\Debug\ascii_3d.pdb
-D:\REPOSITORY\ASCII 3D\ascii 3d\obj\Debug\ascii 3d.csprojAssemblyReference.cache
 D:\REPOSITORY\ASCII 3D\ascii 3d\obj\Debug\ascii 3d.csproj.CoreCompileInputs.cache
 D:\REPOSITORY\ASCII 3D\ascii 3d\obj\Debug\ascii_3d.exe
 D:\REPOSITORY\ASCII 3D\ascii 3d\obj\Debug\ascii_3d.pdb
 D:\REPOSITORY\ASCII 3D\ascii 3d\bin\Debug\maps\map1.txt
+D:\REPOSITORY\ASCII 3D\ascii 3d\obj\Debug\ascii 3d.csproj.AssemblyReference.cache
